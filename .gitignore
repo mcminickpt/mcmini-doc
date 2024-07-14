@@ -9,6 +9,9 @@
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 
+# Don't commit Sphinx _build directory.
+docs/source/_build/
+
 # IPython
 profile_default/
 ipython_config.py
