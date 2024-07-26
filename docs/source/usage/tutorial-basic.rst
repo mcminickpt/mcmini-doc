@@ -93,15 +93,15 @@ For an example output, we show here only the first case: |br|
    Trace process with traceId `0` exited with status 0
    *** -p or --print-at-trace requested.  Printing trace:
    THREAD BACKTRACE
-    0. thread 0: starts
-    1. thread 0: pthread_create(thr:1, _, _, _)
-    2. thread 0: pthread_mutex_lock(mut:1)
-    3. thread 0: pthread_mutex_unlock(mut:1)
-    4. thread 1: starts
-    5. thread 1: pthread_mutex_lock(mut:1)
-    6. thread 1: pthread_mutex_unlock(mut:1)
-    7. thread 1: exits
-    8. thread 0: pthread_join(thr:1, _)
+    1. thread 0: starts
+    2. thread 0: pthread_create(thr:1, _, _, _)
+    3. thread 0: pthread_mutex_lock(mut:1)
+    4. thread 0: pthread_mutex_unlock(mut:1)
+    5. thread 1: starts
+    6. thread 1: pthread_mutex_lock(mut:1)
+    7. thread 1: pthread_mutex_unlock(mut:1)
+    8. thread 1: exits
+    9. thread 0: pthread_join(thr:1, _)
    0, 0, 0, 0, 1, 1, 1, 1, 0,
    END
    THREAD PENDING OPERATIONS
@@ -176,7 +176,7 @@ So, let's use the same flags, but with :code:`./mcmini-gdb`
    ** Generating trace sequence for:
         ./mcmini.git/mcmini -v -q  '-f' '-q' '-m15' './deadlock'
         (This may take a while ...)
-   ** Running: /home/gene/mcmini.git/mcmini-gdb -m15 -p 0 -p'0, 0, 0, 1, 1, ' ./deadlock
+   ** Running: /home/gene/mcmini/mcmini-gdb -m15 -p 0 -p'0, 0, 0, 1, 1, ' ./deadlock
    ** Note:  In order to replay this trace,
              it is faster to directly run the above command line.
    ...
@@ -215,7 +215,7 @@ Apparently, when we used the :option:`-f` flag, McMini discovered a trace sequen
 
 .. code:: shell
 
-   ./mcmini-gdb -m15 -p 0 -p'0, 0, 0, 1, 1, ' ./deadlock`
+   ./mcmini-gdb -m15 -p 0 -p'0, 0, 0, 1, 1, ' ./deadlock
    (gdb) mcmini forward end
 
 .. image:: mcmini-gdb.png
@@ -343,10 +343,11 @@ So, Thread |nbsp| 0 can simply unlock mutex |nbsp| 2.
 Indeed, if we use the standard :code:`mcmini` command, we
 see a longer trace of 13 |nbsp| transitions,
 in which each thread exits successfully.
+We set the verbose flag twice for more details: :option:`-v` :option:`-v`
 
 .. code:: shell
 
-   % ./mcmini -m15 -p'0, 0, 0, 1, 0' ./deadlock
+   % ./mcmini -m15 -v -v -p'0, 0, 0, 1, 0' ./deadlock
    ...
    THREAD BACKTRACE
    ...
@@ -370,6 +371,16 @@ sequences, as seen by:
    *** DEADLOCK DETECTED ***
      (Trace number (traceId): 1)
 
+Alternatively, we can directly grep:
+
+.. code::
+
+   $ ./mcmini -q -v ./deadlock 2>/dev/null | grep ^TraceId
+   TraceId 0:  0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0,
+   TraceId 1, *** DEADLOCK DETECTED ***
+   TraceId 1:  0, 0, 0, 1, 1,
+   TraceId 2:  0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0,
+
 Note that this allows us to see all traces in lexicographic order.
 If you prefer to see trace sequence number |nbsp| X, only, then do:
 
@@ -380,8 +391,8 @@ TraceId |nbsp| 0, above, differs from our trace with prefix
 `0,0,0,1,0` in that our trace shows a fourth transition executed
 by thread |nbsp| 1, and in TraceId |nbsp| 0, this has now been delayed
 until transition |nbsp| 7.  But this is the transition in which
-thread |nbsp| 1 is created.  So, it doesn't matter whether thread
-|nbsp| 1 is created sooner or later.  The *canonical* variant uses
+thread |nbsp| 1 is created.  So, it doesn't matter whether
+thread |nbsp| 1 is created sooner or later.  The *canonical* variant uses
 lexicographic ordering to prefer transition |nbsp| 4 being executed by
 thread |nbsp| 0 instead of thread |nbsp| 1.
 
