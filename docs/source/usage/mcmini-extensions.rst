@@ -27,7 +27,8 @@ Shared variables:  READ() and WRITE()
 
 **TODO:** *This section is still experimental.
 We have not tested the older code originally created in the
-academic prototype of McMini.*
+academic prototype of McMini.  Furthermore, the prototype
+assumes a memory model of "sequential consistency".*
 
 **TODO:** Use `pthread_rwlock_rdlock` after a read and `pthread_rwlock_wrlock` after a write.
 
