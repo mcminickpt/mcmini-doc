@@ -81,7 +81,7 @@ the tutorial code, above, into :code:`subtle.c`, and compile it locally.
    After that, we compile the code and run with McMini.
 
 ---------------------------------------
-Analyzing the bug for ``bufferSize>1``
+Analyzing the bug for ``bufferSize==1``
 ---------------------------------------
 
 .. COMMENT
