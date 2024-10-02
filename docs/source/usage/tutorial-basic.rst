@@ -75,13 +75,13 @@ the parent or the child locks the mutex first.  We can see this explicitly
 by running |br|
 |nbsp| |nbsp| :code:`./mcmini -v ./one-mutex` (to see the two trace sequences). |br|
 For a detailed analysis, one can run |br|
-:code:`./mcmini -p 0 -v  ./one-mutex` |br|
+:code:`./mcmini -t 0 -v  ./one-mutex` |br|
 or: |br|
-|nbsp| |nbsp| :code:`./mcmini -p 1 -v ./one-mutex`.  |br|
+|nbsp| |nbsp| :code:`./mcmini -t 1 -v ./one-mutex`.  |br|
 (And we could run "`./mcmini -v -v ./one-mutex`" to see both traces in the same command.)
 
 For an example output, we show here only the first case: |br|
-|nbsp| |nbsp| :code:`./mcmini -p 0 -v  ./one-mutex`
+|nbsp| |nbsp| :code:`./mcmini -t 0 -v  ./one-mutex`
 
 .. code:: shell
 
@@ -91,7 +91,7 @@ For an example output, we show here only the first case: |br|
    *** Done.
    TraceId 0:  0, 0, 0, 0, 1, 1, 1, 1, 0,
    Trace process with traceId `0` exited with status 0
-   *** -p or --print-at-trace requested.  Printing trace:
+   *** -t or --trace requested.  Printing trace:
    THREAD BACKTRACE
     1. thread 0: starts
     2. thread 0: pthread_create(thr:1, _, _, _)
@@ -115,11 +115,11 @@ And while it is overkill here, we may prefer a more detailed overview
 with line numbers from the original source code.
 We can either pass on the desired trace sequence:
 
-> :code:`./mcmini-annotate -p '0, 0, 0, 0, 1, 1, 1, 1, 0,' ./one-mutex`
+> :code:`./mcmini-annotate -t '0, 0, 0, 0, 1, 1, 1, 1, 0,' ./one-mutex`
 
 or more simply, pass on the original flags:
 
-> :code:`./mcmini-annotate -p 0 ./one-mutex`
+> :code:`./mcmini-annotate -t 0 ./one-mutex`
 
 They both yield:
 
@@ -176,7 +176,7 @@ So, let's use the same flags, but with :code:`./mcmini-gdb`
    ** Generating trace sequence for:
         ./mcmini.git/mcmini -v -q  '-f' '-q' '-m15' './deadlock'
         (This may take a while ...)
-   ** Running: /home/gene/mcmini/mcmini-gdb -m15 -p 0 -p'0, 0, 0, 1, 1, ' ./deadlock
+   ** Running: /home/gene/mcmini/mcmini-gdb -m15 -t 0 -t'0, 0, 0, 1, 1, ' ./deadlock
    ** Note:  In order to replay this trace,
              it is faster to directly run the above command line.
    ...
@@ -209,13 +209,13 @@ So, let's use the same flags, but with :code:`./mcmini-gdb`
 So, let's explore further.  Note the comment at :code:`Running`,
 saying that McMini has substituted the following command line.
 
-> :code:`./mcmini-gdb -m15 -p 0 -p'0, 0, 0, 1, 1, ' ./deadlock`
+> :code:`./mcmini-gdb -m15 -t 0 -t'0, 0, 0, 1, 1, ' ./deadlock`
 
 Apparently, when we used the :option:`-f` flag, McMini discovered a trace sequence with just five transitions until deadlock.  And the initial McMini output shows that we can run `mcmini forward 5`, so as to reach this deadlock.  But `mcmini forward end` is easier to type.  So, we'll use that form.  Let's do it.
 
 .. code:: shell
 
-   ./mcmini-gdb -m15 -p 0 -p'0, 0, 0, 1, 1, ' ./deadlock
+   ./mcmini-gdb -m15 -t 0 -t'0, 0, 0, 1, 1, ' ./deadlock
    (gdb) mcmini forward end
 
 .. image:: mcmini-gdb.png
@@ -250,7 +250,7 @@ We now have:
 
 .. code::
 
-   ./mcmini-gdb -m15 -p 0 -p'0, 0, 0, 1, 1, ' ./deadlock
+   ./mcmini-gdb -m15 -t 0 -t'0, 0, 0, 1, 1, ' ./deadlock
    (gdb) mcmini forward end
    (gdb) mcmini back 1
    (gdb) mcmini where
@@ -303,13 +303,13 @@ next goal of Thread |nbsp| 0.
 Let's prove our theory.  We'll play a "what-if" game.
 Instead of the trace sequence
 
-> -p'0, 0, 0, 1, 1, '
+> -t'0, 0, 0, 1, 1, '
 
 let's try:
 
-> -p'0, 0, 0, 1, 0, '
+> -t'0, 0, 0, 1, 0, '
 
-We omit the `-p0` flag and specify only the trace sequence prefix,
+We omit the `-t0` flag and specify only the trace sequence prefix,
 to see all possible traces.  It turns out that there is only
 one trace with this prefix.
 
@@ -327,7 +327,7 @@ McMini command, :code:`mcmini printPendingTransitions`.
 
 .. code::
 
-   ./mcmini-gdb -m15 -p'0, 0, 0, 1, 0, ' ./deadlock
+   ./mcmini-gdb -m15 -t'0, 0, 0, 1, 0, ' ./deadlock
    (gdb) layout src # or ctrl-Xa (full-screen view)
    (gdb) mcmini forward 5
    (gdb) mcmini printPendingTransitions
@@ -347,7 +347,7 @@ We set the verbose flag twice for more details: :option:`-v` :option:`-v`
 
 .. code:: shell
 
-   % ./mcmini -m15 -v -v -p'0, 0, 0, 1, 0' ./deadlock
+   % ./mcmini -m15 -v -v -t'0, 0, 0, 1, 0' ./deadlock
    ...
    THREAD BACKTRACE
    ...
@@ -384,7 +384,7 @@ Alternatively, we can directly grep:
 Note that this allows us to see all traces in lexicographic order.
 If you prefer to see trace sequence number |nbsp| X, only, then do:
 
-> :code:`mcmini -v -pX ./deadlock`
+> :code:`mcmini -v -tX ./deadlock`
 
 In fact, our new trace is a variant of TraceId |nbsp| 0, above.
 TraceId |nbsp| 0, above, differs from our trace with prefix
@@ -418,6 +418,6 @@ and leave you to discover these additional possibilities.
 
 .. option:: -q, --quiet
 
-.. option:: -p <traceId|traceSeq>, --print-at-traceId <traceId|traceSeq>
+.. option:: -t <traceId|traceSeq>, --trace <traceId|traceSeq>
 
 .. option:: -v, --verbose

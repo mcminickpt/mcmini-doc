@@ -210,10 +210,10 @@ more "common" thread schedule.  Let's inspect traceId
 
 .. code:: shell
 
-   USER% ./mcmini -p0 -q -m15 ./deadlock
+   USER% ./mcmini -t0 -q -m15 ./deadlock
 
    About to exec into ./deadlock
-   *** -p or --print-at-trace requested.  Printing trace:
+   *** -t or --trace requested.  Printing trace:
    THREAD BACKTRACE
     1. thread 0: starts
     2. thread 0: pthread_create(thr:1, _, _, _)
@@ -262,7 +262,7 @@ McMini man page
 
 .. parsed-literal::
 
-   :program:`mcmini` [-m <num>] [-f] [-q] [-p <traceId|traceSeq>] [-v [-v]] [-h] target_executable
+   :program:`mcmini` [-m <num>] [-f] [-q] [-t <traceId|traceSeq>] [-v [-v]] [-h] target_executable
 
 .. option:: -m <num>, --max-depth-per-thread <num>
 
@@ -279,7 +279,7 @@ McMini man page
 
    Don't print the target executable to standard output, while executing traces.
 
-.. option:: -p <traceId|traceSeq>, --print-at-traceId <traceId|traceSeq>
+.. option:: -t <traceId|traceSeq>, --traceId <traceId|traceSeq>
 
    There are two forms, depending on whether *traceId* or *traceSeq*
    is supplied.  If *traceId* (a number) is supplied, then the
@@ -305,7 +305,7 @@ McMini man page
 .. parsed-literal::
 
    :program:`mcmini-gdb` ...<same as mcmini args>...
-   :program:`mcmini-annotate` -p <traceSeq> ...<same as mcmini args>...
+   :program:`mcmini-annotate` -t <traceSeq> ...<same as mcmini args>...
 
 |nbsp|
 
@@ -320,21 +320,21 @@ produces identical semantics.  Each trace is numbered sequentially.
 
 McMini stops its search according to three stop criteria:
 
-  a. when a trace number is reached, as specified by :option:`-p` <traceId>; or
+  a. when a trace number is reached, as specified by :option:`-t` <traceId>; or
   b. when a trace results in deadlock, if :option:`-f` was specified; or
-  c. when a specific trace sequence is specified by :option:`-p` <traceSeq>.
+  c. when a specific trace sequence is specified by :option:`-t` <traceSeq>.
 
 (See the subsection on :ref:`advanced features`
-for a description of trace sequences for :option:`-p`.)
+for a description of trace sequences for :option:`-t`.)
 
 The three stop criteria can also be used in combination, including (for example)
-``-p 2 -p '0,0,1,2'`` .  In this example, McMini begins each trace
+``-t 2 -t '0,0,1,2'`` .  In this example, McMini begins each trace
 with the prefix given by thread ids '0,0,1,2' running in sequence.
-Within those searches for that prefix, McMini :option:`-p` |nbsp| 3
+Within those searches for that prefix, McMini :option:`-t` |nbsp| 3
 will examine thread traces: traceId 0, 1, and finally
 stopping at traceID |nbsp| 2.
 
-**BUG:** ``-p 0 -p '0,0,1,2'`` works, but not ``-p 2 -p '0,0,1'`` for ./deadlock
+**BUG:** ``-t 0 -t '0,0,1,2'`` works, but not ``-t 2 -t '0,0,1'`` for ./deadlock
 
 **TODO:** *Check if assertion and segfault also stop the search when
 :option:`-f` is specified.*
@@ -358,12 +358,12 @@ McMini advanced features using trace sequences
 
 .. parsed-literal:: **McMini alternative: traceSeq:**
 
-   mcmini -p 0  -p <traceSeq> [-m <num>] [-f] [-q] target_executable
+   mcmini -t 0  -t <traceSeq> [-m <num>] [-f] [-q] target_executable
 
 In this variation, a :abbr:`trace sequence (traceSeq)` is supplied (such as the trace
 sequence `0, 0, 0, 1, 1,` from line |nbsp| 9 of the `McMini output`_
-in the Quick Start section).  The option `-p 0` was supplied to ensure
-that only this one trace sequence is explored.  If `-p 0` is omitted,
+in the Quick Start section).  The option `-t 0` was supplied to ensure
+that only this one trace sequence is explored.  If `-t 0` is omitted,
 then the trace sequence will be viewed as a prefix, and McMini will
 search all traces with this prefix.
 
@@ -387,7 +387,7 @@ maybe on semaphore-pingpong.
 
 .. parsed-literal:: **Annotated addition to the McMini output:**
 
-   :command:`python3 mcmini-annotate` :option:`-p` <traceSeq> [:option:`-q`] :program:`target_executable`
+   :command:`python3 mcmini-annotate` :option:`-t` <traceSeq> [:option:`-q`] :program:`target_executable`
 
 In this variation, a more expansive description of the McMini output is
 produced, including the function, file and line number at which each
@@ -395,7 +395,7 @@ transition occurred.
 
 .. parsed-literal:: **McMini extensions to GDB for analyzing a trace:**
 
-   :command:`mcmini-gdb` :option:`-p` <traceSeq> [:option:`-q`] :program:`target_executable`
+   :command:`mcmini-gdb` :option:`-t` <traceSeq> [:option:`-q`] :program:`target_executable`
 
 In this variation, the command opens a GDB session.  Additional
 GDB commands are provided.  Each new GDB command requires the

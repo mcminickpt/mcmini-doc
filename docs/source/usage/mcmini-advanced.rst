@@ -16,9 +16,9 @@ Advanced McMini
    :depth: 2
 
 
----------------------------------------------------------
-Analyzing a trace: ``mcmini --print-at-trace <traceSeq>``
----------------------------------------------------------
+------------------------------------------------
+Analyzing a trace: ``mcmini --trace <traceSeq>``
+------------------------------------------------
 
 **TODO:** Explain that ``traceSeq`` is '0 0 0 1 2', as opposed to ``traceId`` (e.g., 13).
 
@@ -38,23 +38,23 @@ This information can be used later, using mcmini-gdb, to do:
 
 to examine the pending transitions for each thread.
 In this way, we can append a thread number to our ``traceSeq``,
-and repeat `-p <traceSeq>`, in order to "steer" McMini
+and repeat `-t <traceSeq>`, in order to "steer" McMini
 into the path of interest.
 
 -----------------------------------------
 Annotate for improved "THREAD BACKTRACE"
 -----------------------------------------
 
-  :command:`python3 mcmini-annotate -p <traceSeq>`
+  :command:`python3 mcmini-annotate -t <traceSeq>`
 
-----------------------------------------------
-Using GDB with ``--print-at-trace <traceSeq>``
-----------------------------------------------
+-------------------------------------
+Using GDB with ``--trace <traceSeq>``
+-------------------------------------
 
 **TODO:**
 
 Start with::
-  :command:`mcmini-gdb  -p <traceSeq>`
+  :command:`mcmini-gdb  -t <traceSeq>`
 
 Then consider::
   :command:`mcmini help`

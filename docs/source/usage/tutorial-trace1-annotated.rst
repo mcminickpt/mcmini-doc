@@ -9,7 +9,7 @@ Tutorial code trace (annotated; bufferSize == 1)
   USER% ./mcmini-annotate -q -f -m18 ./subtle 1
 
   ** Generating trace sequence for:
-       gdb -x /home/gene/mcmini.git/gdbinit -x /home/gene/mcmini.git/gdbinit_annotate --args /home/gene/mcmini.git/mcmini -p 0  -q -f -m18 ./subtle 1
+       gdb -x /home/gene/mcmini.git/gdbinit -x /home/gene/mcmini.git/gdbinit_annotate --args /home/gene/mcmini.git/mcmini -t 0  -q -f -m18 ./subtle 1
        (This may take a while ...)
   
   *** transition: 1; thread: 2.1 (thread 1 of inferior 2)
