@@ -138,7 +138,10 @@ When we run it, we see::
 Now let's test this code with McMini, to see if there's a bug.
 We execute:
 
-> ./mcmini -f -q -m15 ./deadlock
+
+.. code:: shell
+
+   ./mcmini -f -q -m15 ./deadlock
 
 McMini then uncovers the following deadlock:
 
@@ -171,15 +174,15 @@ McMini then uncovers the following deadlock:
 Before analyzing this, we introduce some terminology.
 
 **Definition:** *transition*
-  A :dfn:`transition` is a multithreaded operation.  As seen above, McMini
-  supports ``pthread_create``, ``pthread_join``, ``starts`` (thread
-  start), ``exits`` (thread exit), operations for mutex, semaphore,
-  condition variables, and others.
+  A :dfn:`thread transition` (or "transition", for short) is a thread
+  operation.  As seen above, McMini supports ``pthread_create``,
+  ``pthread_join``, ``starts`` (thread start), ``exits`` (thread exit),
+  operations for mutex, semaphore, condition variables, and others.
 
 **Definition:** *trace*
-  A :dfn:`trace` is a particular thread schedule for a single execution of
-  a *target program*.  The target above is for the program :program:`a.out`
-  (:program:`deadlock`, in our case).
+  An :dfn:`execution trace` (or "trace", for short) is a particular thread
+  schedule for a single execution of a *target program*.  The target above
+  is for the program :program:`a.out` (:program:`deadlock`, in our case).
   The trace above is for traceId number |nbsp| 1.  (The traceId's begin
   at traceId |nbsp| 0.)
 
@@ -302,9 +305,7 @@ McMini man page
 .. parsed-literal::
 
    :program:`mcmini-gdb` ...<same as mcmini args>...
-   :program:`mcmini-annotate.py` -p <traceSeq> ...<same as mcmini args>...
-
-**FIXME:** *Will we use ``mcmini-annotate.py`` or ``mcmini-annotate``?*
+   :program:`mcmini-annotate` -p <traceSeq> ...<same as mcmini args>...
 
 |nbsp|
 
@@ -386,7 +387,7 @@ maybe on semaphore-pingpong.
 
 .. parsed-literal:: **Annotated addition to the McMini output:**
 
-   :command:`python3 mcmini-annotate.py` :option:`-p` <traceSeq> [:option:`-q`] :program:`target_executable`
+   :command:`python3 mcmini-annotate` :option:`-p` <traceSeq> [:option:`-q`] :program:`target_executable`
 
 In this variation, a more expansive description of the McMini output is
 produced, including the function, file and line number at which each

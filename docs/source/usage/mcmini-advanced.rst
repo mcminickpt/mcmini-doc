@@ -45,7 +45,7 @@ into the path of interest.
 Annotate for improved "THREAD BACKTRACE"
 -----------------------------------------
 
-  :command:`python3 mcmini-annotate.py -p <traceSeq>`
+  :command:`python3 mcmini-annotate -p <traceSeq>`
 
 ----------------------------------------------
 Using GDB with ``--print-at-trace <traceSeq>``

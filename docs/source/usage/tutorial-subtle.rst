@@ -53,7 +53,7 @@ some legacy code, when a user ran this code for more than 30 |nbsp| seconds.
 
    * :doc:`Tutorial code (source)<tutorial-subtle.c>`
    * :doc:`McMini trace (bufferSize==1)<tutorial-trace1>`
-   * :doc:`McMini trace (annotated)<tutorial-trace1-annotate>`
+   * :doc:`McMini trace (annotated)<tutorial-trace1-annotated>`
    * :doc:`McMini trace (bufferSize==2)<tutorial-trace2>`
    * :doc:`McMini trace (bufferSize==5)<tutorial-trace5>`
 
@@ -97,6 +97,9 @@ although a little large is also fine.  When we use ':option:`-m` 30', we find
 a trace with a bug using 54 transitions.  But when reducing this to
 ':option:`-m` 18', we find a trace with a bug by using only 28 transitions.
 Notice that McMini identifies two possible lost wakeups in the trace.
+(See 
+`this web page <https://docs.oracle.com/cd/E19120-01/open.solaris/816-5137/sync-30/index.html>`_ 
+for a definition of a "lost wakeup".)
 The trace is printed below:
 
 .. sidebar:: Example code and McMini trace output
