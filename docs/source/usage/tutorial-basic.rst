@@ -75,15 +75,15 @@ the parent or the child locks the mutex first.  We can see this explicitly
 by running |br|
 |nbsp| |nbsp| :code:`./mcmini -v ./one-mutex` (to see the two trace sequences). |br|
 For a detailed analysis, one can run |br|
-:code:`./mcmini -t 0 -v  ./one-mutex` |br|
+:code:`./mcmini -t 0 -v ./one-mutex` |br|
 or: |br|
 |nbsp| |nbsp| :code:`./mcmini -t 1 -v ./one-mutex`.  |br|
 (And we could run "`./mcmini -v -v ./one-mutex`" to see both traces in the same command.)
 
 For an example output, we show here only the first case: |br|
-|nbsp| |nbsp| :code:`./mcmini -t 0 -v  ./one-mutex`
+|nbsp| |nbsp| :code:`./mcmini -t 0 -v ./one-mutex`
 
-.. code:: shell
+.. code:: text
 
    About to exec into ./one-mutex
    parent: I locked the mutex!
@@ -111,13 +111,16 @@ For an example output, we show here only the first case: |br|
    ***** Model checking completed! *****
    Number of traces: 1
 
-And while it is overkill here, we may prefer a more detailed overview
+And while it is overkill here, we may prefer to use 'mcmini-annotate'
+for a more detailed overview
 with line numbers from the original source code.
-We can either pass on the desired trace sequence:
+*(NOTE:  To use* **mcmini-annotate**, *below, you must have first compiled McMini with '-g3'.  If not, you can quickly re-compile with:* **make clean && make -j8 debug** *)*
+
+We can invoke 'mcmini-annotate' either either as:
 
 > :code:`./mcmini-annotate -t '0, 0, 0, 0, 1, 1, 1, 1, 0,' ./one-mutex`
 
-or more simply, pass on the original flags:
+or more simply, pass on the original flags as given by 'mcmini':
 
 > :code:`./mcmini-annotate -t 0 ./one-mutex`
 
@@ -171,7 +174,7 @@ So, let's use the same flags, but with :code:`./mcmini-gdb`
 
 > :code:`./mcmini-gdb -f -q -m15 ./deadlock`
 
-.. code::
+.. code:: text
 
    ** Generating trace sequence for:
         ./mcmini.git/mcmini -v -q  '-f' '-q' '-m15' './deadlock'
@@ -375,7 +378,7 @@ Alternatively, we can directly grep:
 
 .. code::
 
-   $ ./mcmini -q -v ./deadlock 2>/dev/null | grep ^TraceId
+   % ./mcmini -q -v ./deadlock 2>/dev/null | grep ^TraceId
    TraceId 0:  0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0,
    TraceId 1, *** DEADLOCK DETECTED ***
    TraceId 1:  0, 0, 0, 1, 1,

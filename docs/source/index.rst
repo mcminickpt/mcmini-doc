@@ -126,7 +126,7 @@ To begin, copy the following program into a file, :file:`deadlock.c`.
 
 Now compile it::
 
-   gcc deadlock.c -o deadlock
+   gcc deadlock.c -o deadlock -pthread
    ./deadlock
 
 When we run it, we see::
@@ -138,10 +138,8 @@ When we run it, we see::
 Now let's test this code with McMini, to see if there's a bug.
 We execute:
 
-
-.. code:: shell
-
-   ./mcmini -f -q -m15 ./deadlock
+.. parsed-literal::
+   ./mcmini :option:`-f` :option:`-q` :option:`-m`\15 ./deadlock
 
 McMini then uncovers the following deadlock:
 
@@ -279,7 +277,7 @@ McMini man page
 
    Don't print the target executable to standard output, while executing traces.
 
-.. option:: -t <traceId|traceSeq>, --traceId <traceId|traceSeq>
+.. option:: -t <traceId|traceSeq>, --trace <traceId|traceSeq>
 
    There are two forms, depending on whether *traceId* or *traceSeq*
    is supplied.  If *traceId* (a number) is supplied, then the
@@ -334,8 +332,6 @@ Within those searches for that prefix, McMini :option:`-t` |nbsp| 3
 will examine thread traces: traceId 0, 1, and finally
 stopping at traceID |nbsp| 2.
 
-**BUG:** ``-t 0 -t '0,0,1,2'`` works, but not ``-t 2 -t '0,0,1'`` for ./deadlock
-
 **TODO:** *Check if assertion and segfault also stop the search when
 :option:`-f` is specified.*
 
@@ -356,11 +352,13 @@ And :option:`-q` (quiet) discards any output to the screen (stdout and stderr).
 McMini advanced features using trace sequences
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. parsed-literal:: **McMini alternative: traceSeq:**
+.. parsed-literal:: **McMini -t flag using a traceSeq:**
 
-   mcmini -t 0  -t <traceSeq> [-m <num>] [-f] [-q] target_executable
+   mcmini :option:`-t` 0 :option:`-t` <traceSeq>\
+    [:option:`-m` <num>] [:option:`-f`] [:option:`-q`] target_executable
 
-In this variation, a :abbr:`trace sequence (traceSeq)` is supplied (such as the trace
+In this variation, a :abbr:`trace sequence (traceSeq)` is supplied
+(such as the trace
 sequence `0, 0, 0, 1, 1,` from line |nbsp| 9 of the `McMini output`_
 in the Quick Start section).  The option `-t 0` was supplied to ensure
 that only this one trace sequence is explored.  If `-t 0` is omitted,
@@ -376,18 +374,16 @@ But Python can parse it.  If it's too long, then print it in abbreviated form:
 
 >  ..[transitionId:].. 1, 2, 1, 1, 2, 1, ...
 
-**TODO:** In future, have a one-line window for TUI to display the trace sequence
-dynamically, and always.
+**TODO:** In future, have a one-line window for TUI to display the trace
+sequence dynamically, and always.
 
-**TODO:** Add a :program:`mcmini-gdb` tutorial on the next page, describing also break and continue, and including
-some pictures of the GDB TUI at certain stages.  Start with something like:
-
-**TODO:** Then show mcmini forward/back/where/break/continue on dining philosophers or
-maybe on semaphore-pingpong.
+**TODO:** Add to the :program:`mcmini-gdb` tutorial on the next page,
+describing also break and continue, and including some pictures of the
+GDB TUI at certain stages.  Start with something like:
 
 .. parsed-literal:: **Annotated addition to the McMini output:**
 
-   :command:`python3 mcmini-annotate` :option:`-t` <traceSeq> [:option:`-q`] :program:`target_executable`
+   python3 mcmini-annotate :option:`-t` <traceSeq> [:option:`-q`] target_executable
 
 In this variation, a more expansive description of the McMini output is
 produced, including the function, file and line number at which each
@@ -395,7 +391,7 @@ transition occurred.
 
 .. parsed-literal:: **McMini extensions to GDB for analyzing a trace:**
 
-   :command:`mcmini-gdb` :option:`-t` <traceSeq> [:option:`-q`] :program:`target_executable`
+   mcmini-gdb :option:`-t` <traceSeq> [:option:`-q`] target_executable
 
 In this variation, the command opens a GDB session.  Additional
 GDB commands are provided.  Each new GDB command requires the
@@ -403,7 +399,7 @@ prefix `mcmini`.  For a quick orientation, do:
 
 > (gdb) mcmini help
 
-.. code:: shell
+.. code:: text
 
    mcmini -- mcmini <TAB> : show all mcmini commands
    mcmini back -- Go back one transition of current trace, by re-executing
