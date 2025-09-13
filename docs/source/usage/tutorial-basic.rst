@@ -157,7 +157,7 @@ mutex first.
 Exploring mcmini-gdb: integration with GDB
 ------------------------------------------
 
-Once we McMini has reported a deadlock, we have two tools to explore and analyze that deadlock.
+Once McMini has reported a deadlock, we have two tools to explore and analyze that deadlock.
 
  * :program:`mcmini-annotate` - annotating the thread sequence with further details
  * :program:`mcmini-gdb` - running GDB and stepping forward and back through the transitions
@@ -417,7 +417,13 @@ and leave you to discover these additional possibilities.
 
 .. option:: -m <num>, --max-depth-per-thread <num>
 
+.. option:: -M <num>, --max-transitions-depth-limit <num>
+
 .. option:: -f, --first, --first-deadlock
+
+.. option:: -a, --all, --all-deadlocks
+
+.. option:: -l, --check-for-livelock
 
 .. option:: -q, --quiet
 

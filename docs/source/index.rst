@@ -269,9 +269,25 @@ McMini man page
    no further transitions for this thread will be considered.
    But transitions by other threads can continue to extend the current trace.
 
-.. option:: -f, --first, --first-deadlock
+.. option:: -M <num>, --max-transitions-depth-limit <num> (default num = 1500)
+
+   Maximum number of transitions any single trace can execute.
+   If while executing, a trace reaches this maximum depth, it
+   is truncated. But McMini continues searching through the other
+   possible schedules.
+
+.. option:: -f, --first, --first-deadlock (default)
 
    Stop search at the first deadlock found, and print that trace.
+
+.. option:: -a, --all, --all-deadlocks
+
+   Search through all the possible schedules even after a failure has
+   already been detected.
+
+.. option:: -l, --check-for-livelock (experimental)
+
+   Along with deadlocks, also check for livelock.
 
 .. option:: -q, --quiet
 
@@ -335,10 +351,23 @@ stopping at traceID |nbsp| 2.
 **TODO:** *Check if assertion and segfault also stop the search when
 :option:`-f` is specified.*
 
-Another option, which modifies the traces that McMini searches,
-is :option:`-m` (the maximum depth, or number of transitions,
-executed by any one thread).  Any traces reaching this maximum depth
-are then truncated, and the following branch is then searched.
+An option which can be used to modify the traces that McMini searches
+is :option:`-m` (the maximum depth, or the number of transitions, which
+can be executed by any one thread). Any thread that reaches this maximum
+depth cannot execute any further transitions. But the other threads can
+continue execution.
+
+It should be noted that tuning the -m parameter plays an important role
+in detecting bugs: too large and it runs forever, potentially executing
+just one trace; too small and the trace with the bug does not execute
+enough transitions per thread to see the bug.
+
+Another such option is :option:`-M` (the maximum depth, or the number
+of transitions, which can be executed by any one trace). Any traces
+reaching this maximum depth are then truncated, and the following
+branch is then searched.
+
+A combination of -m and -M can be used to find the shortest trace with a bug.
 
 Finally :option:`-v` (verbose) prints the trace sequence for
 each trace that is searched.  The option :option:`-v` |nbsp| :option:`-v`
