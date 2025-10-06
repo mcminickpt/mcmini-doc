@@ -272,9 +272,8 @@ McMini man page
 .. option:: -M <num>, --max-transitions-depth-limit <num> (default num = 1500)
 
    Maximum number of transitions any single trace can execute.
-   If while executing, a trace reaches this maximum depth, it
-   is truncated. But McMini continues searching through the other
-   possible schedules.
+   Upon reaching this maximum depth for a trace, McMini prunes the branch
+   and continues searching through other possible schedules.
 
 .. option:: -f, --first, --first-deadlock (default)
 
@@ -283,11 +282,13 @@ McMini man page
 .. option:: -a, --all, --all-deadlocks
 
    Search through all the possible schedules even after a failure has
-   already been detected.
+   already been detected. (Currently does not support -l)
 
 .. option:: -l, --check-for-livelock (experimental)
 
-   Along with deadlocks, also check for livelock.
+   Along with deadlocks, also check for livelock. (PROBLEM: Currently, this
+   identifies livelock examples in which some other enabled threads do not
+   participate.)
 
 .. option:: -q, --quiet
 

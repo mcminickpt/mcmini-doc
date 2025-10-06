@@ -21,9 +21,9 @@ developers.*)
    :local:
    :depth: 2
 
--------------------------------------
-Shared variables:  READ() and WRITE()
--------------------------------------
+----------------------------------------------------
+Shared variables and data races:  READ() and WRITE()
+----------------------------------------------------
 
 **TODO:** *This section is still experimental.
 We have not tested the older code originally created in the
@@ -40,6 +40,70 @@ and:
 *In this tutorial, we could implement
 '#ifdef MCMINI; pthread_rwlock_rdlock(); #endif', etc.
 And then we get to use 'choose()' to decide if a thread should do 'push()', 'pop()', etc.  And we can include diagram for ABA problem.*
+
+-------------------------------------------
+Shared variables and data races: using LLVM
+-------------------------------------------
+
+McMini offers a simple LLVM pass plugin which can be used to instrument any
+and all accesses to shared memory, enabling McMini to automatically detect
+data races within the instrumented code.
+
+The first step is to install the required LLVM packages.
+On most Linux distros, LLVM can be installed by adding the following packages:
+  **llvm llvm-dev clang**
+On Red Hat-based distros, use **llvm-devel**.
+
+Next, build a shared library for the LLVM plugin:
+
+.. code::
+
+   make -f Makefile_llvm
+
+Next, instrument the target program, *target-source*. Note the suffix: *_mcmini*.
+
+.. code::
+
+   make -f Makefile_llvm path/to/target-source_mcmini
+
+
+Finally, execute the instrumented target program under McMini:
+
+.. code::
+
+   ./mcmini -m <num> path/to/target-source_mcmini
+
+**NOTE:** The instrumented executable will be compiled with a suffix _mcmini,
+and it can only be run under McMini, since calls to functions from the McMini
+shared library have been inserted into the original code.
+
+To run a quick test and verify the plugin, run:
+
+.. code::
+
+   make -f Makefile_llvm check
+
+This instruments the file mcmini/test/data-races/simple-data-race.c and
+tests it under McMini.
+
+One should see the following output:
+
+.. image:: data-race.png
+   :alt: data-race display
+
+Note that McMini successfully detects a data race. To understand
+the output, let us have a look at the **THREAD PENDING OPERATIONS**
+
+.. code::
+
+   THREAD PENDING OPERATIONS
+    * thread 0: pthread_join(thr:1, _) [ Blocked ]
+      thread 1: WRITE (counter) [ MaxThreadDepth reached (5) ]
+      thread 2: READ (counter) [ Enabled ]
+
+The output shows that both threads 1 and 2 are trying to access the shared
+variable **counter**, thus indicating a read-after-write data race.
+McMini can also detect write-after-write data races.
 
 --------------------------------
 McMini choose(): Modeling inputs
