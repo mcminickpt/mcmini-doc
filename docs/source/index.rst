@@ -260,7 +260,7 @@ McMini man page
 
 .. parsed-literal::
 
-   :program:`mcmini` [-m <num>] [-f] [-q] [-t <traceId|traceSeq>] [-v [-v]] [-h] target_executable
+   :program:`mcmini` [-m <num>] [-M <num>] [-f] [-a] [-l] [-r] [-lc <num>] [--continue-after-data-race] [-q] [-t <traceId|traceSeq>] [-v [-v]] [-h] target_executable
 
 .. option:: -m <num>, --max-depth-per-thread <num>
 
@@ -286,9 +286,23 @@ McMini man page
 
 .. option:: -l, --check-for-livelock (experimental)
 
-   Along with deadlocks, also check for livelock. (PROBLEM: Currently, this
-   identifies livelock examples in which some other enabled threads do not
-   participate.)
+   Along with deadlocks, also check for livelock. Can be combined with
+   ``-r``, ``-m``, ``-M``, and ``-lc`` flags to modify search behavior.
+   See the :ref:`advanced features` section for details on flag pairing.
+
+.. option:: -r, --explore-round-robin
+
+   Use round-robin scheduling instead of lexicographic order. Particularly
+   useful when combined with ``-l`` for livelock detection.
+
+.. option:: -lc <num>, --max-livelock-cycle-limit <num>
+
+   Maximum transitions to explore during livelock cycle detection
+   (default: 5). Used with ``-l``.
+
+.. option:: --continue-after-data-race
+
+   Continue searching after a data race is detected instead of stopping.
 
 .. option:: -q, --quiet
 

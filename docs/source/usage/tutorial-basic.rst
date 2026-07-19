@@ -425,6 +425,12 @@ and leave you to discover these additional possibilities.
 
 .. option:: -l, --check-for-livelock
 
+.. option:: -r, --explore-round-robin
+
+.. option:: -lc <num>, --max-livelock-cycle-limit <num>
+
+.. option:: --continue-after-data-race
+
 .. option:: -q, --quiet
 
 .. option:: -t <traceId|traceSeq>, --trace <traceId|traceSeq>
